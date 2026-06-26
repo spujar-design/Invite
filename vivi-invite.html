@@ -10,6 +10,13 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
     body {
       min-height: 100vh;
       font-family: 'Nunito', sans-serif;
@@ -18,7 +25,8 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
+      position: fixed;
+      inset: 0;
     }
 
     /* PROGRESS BAR */
