@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Weekend Vivi 🍫</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      background: #1a0a00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* PROGRESS BAR */
+    #progress-bar-wrap {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+      width: 260px; text-align: center; z-index: 10; pointer-events: none;
+    }
+    #progress-label { font-size: 12px; color: #c9835a; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    #progress-track { width: 100%; height: 8px; background: #3a1a08; border-radius: 99px; overflow: hidden; }
+    #progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #c9835a, #f7c59f);
+      border-radius: 99px;
+      transition: width 1.8s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* FLOATING BEANS */
+    .bean { position: fixed; opacity: 0.13; animation: floatup linear infinite; pointer-events: none; user-select: none; }
+    @keyframes floatup {
+      0%   { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-10vh) rotate(360deg); }
+    }
+
+    /* CARD */
+    .card {
+      background: linear-gradient(145deg, #3b1205 0%, #5c1e08 60%, #2a0c00 100%);
+      border: 1.5px solid #7a3a18;
+      border-radius: 28px;
+      padding: 48px 44px 40px;
+      max-width: 420px;
+      width: 90vw;
+      text-align: center;
+      box-shadow: 0 8px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,200,130,.08);
+      position: relative;
+      z-index: 5;
+    }
+
+    .mug-icon { font-size: 3.6rem; display: block; margin-bottom: 6px; animation: steam-bob 2.4s ease-in-out infinite; }
+    @keyframes steam-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    .tag {
+      display: inline-block; background: #7a3a18; color: #f7c59f;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      border-radius: 99px; padding: 4px 14px; margin-bottom: 18px;
+    }
+
+    h1 { font-family: 'Pacifico', cursive; color: #f7c59f; font-size: 1.85rem; line-height: 1.3; margin-bottom: 10px; }
+    h1 span { color: #ff9e6d; }
+    .subtitle { color: #c9835a; font-size: 0.97rem; margin-bottom: 32px; line-height: 1.55; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e86c2c, #f7a55a);
+      color: #fff; border: none; border-radius: 50px; padding: 13px 30px;
+      font-family: 'Nunito', sans-serif; font-size: .95rem; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 18px rgba(232,108,44,.45);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-primary:hover { transform: scale(1.06); box-shadow: 0 6px 28px rgba(232,108,44,.6); }
+
+    #btn-no {
+      background: #3a1a08; color: #c9835a; border: 1.5px solid #7a3a18;
+      border-radius: 50px; padding: 14px 28px;
+      font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: default; position: fixed; white-space: nowrap;
+      z-index: 50; pointer-events: none; user-select: none;
+    }
+
+    .time-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-time {
+      background: #3a1a08; color: #f7c59f; border: 1.5px solid #7a3a18;
+      border-radius: 50px; padding: 11px 22px;
+      font-family: 'Nunito', sans-serif; font-size: .95rem; font-weight: 700; cursor: pointer;
+      transition: background .2s, transform .15s, border-color .2s;
+    }
+    .btn-time:hover { background: linear-gradient(135deg, #e86c2c, #f7a55a); border-color: transparent; color: #fff; transform: scale(1.08); }
+
+    .secret-options { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 270px; margin-top: 4px; }
+    .btn-secret {
+      background: linear-gradient(135deg, #e86c2c, #f7a55a);
+      color: #fff; border: none; border-radius: 50px; padding: 12px 20px;
+      font-family: 'Nunito', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 3px 14px rgba(232,108,44,.35); transition: transform .15s, box-shadow .15s;
+    }
+    .btn-secret:hover { transform: scale(1.04); box-shadow: 0 5px 22px rgba(232,108,44,.55); }
+
+    .step { display: none; flex-direction: column; align-items: center; gap: 13px; }
+    #step-invite { display: flex; }
+
+    /* ── CELEBRATION OVERLAY ── */
+    #celebration {
+      position: fixed; inset: 0; z-index: 100;
+      display: none;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+      background: rgba(10,3,0,0);
+      transition: background 0.6s ease;
+      pointer-events: none;
+    }
+    #celebration.active { background: rgba(10,3,0,0.82); pointer-events: all; }
+
+    /* big pulsing heart */
+    #big-heart {
+      font-size: 0rem;
+      transition: font-size 0.7s cubic-bezier(0.34,1.56,0.64,1);
+      filter: drop-shadow(0 0 24px rgba(255,120,80,0.8));
+      animation: heartbeat 1.6s ease-in-out infinite;
+      line-height: 1;
+    }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      30%      { transform: scale(1.12); }
+      60%      { transform: scale(0.96); }
+    }
+    #celebration.active #big-heart { font-size: 5rem; }
+
+    #celeb-title {
+      font-family: 'Pacifico', cursive;
+      color: #f7c59f;
+      font-size: 0rem;
+      opacity: 0;
+      transition: font-size 0.6s 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s 0.5s;
+      text-shadow: 0 2px 20px rgba(255,160,80,0.5);
+      margin-top: 10px;
+    }
+    #celebration.active #celeb-title { font-size: 1.7rem; opacity: 1; }
+
+    #celeb-sub {
+      color: #c9835a; font-size: 0rem; opacity: 0;
+      transition: font-size 0.5s 0.9s ease, opacity 0.5s 0.9s;
+      max-width: 280px; line-height: 1.55; margin-top: 6px;
+    }
+    #celebration.active #celeb-sub { font-size: .92rem; opacity: 1; }
+
+    /* ten percent badge */
+    #ten-badge {
+      background: linear-gradient(135deg, #e86c2c, #f7a55a);
+      color: #fff;
+      font-family: 'Pacifico', cursive;
+      font-size: 0rem;
+      border-radius: 99px;
+      padding: 0px 0px;
+      opacity: 0;
+      box-shadow: 0 4px 24px rgba(232,108,44,.6);
+      transition: font-size 0.6s 1.3s cubic-bezier(0.34,1.8,0.64,1),
+                  opacity 0.4s 1.3s,
+                  padding 0.6s 1.3s;
+      margin-top: 12px;
+    }
+    #celebration.active #ten-badge { font-size: 1.1rem; opacity: 1; padding: 10px 28px; }
+
+    #celeb-close {
+      margin-top: 22px;
+      background: transparent;
+      color: #c9835a;
+      border: 1.5px solid #7a3a18;
+      border-radius: 50px;
+      padding: 10px 26px;
+      font-family: 'Nunito', sans-serif; font-size: .88rem; font-weight: 700;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.4s 1.9s, background .2s;
+    }
+    #celebration.active #celeb-close { opacity: 1; }
+    #celeb-close:hover { background: #3a1a08; }
+
+    /* confetti pieces */
+    .confetti-piece {
+      position: fixed;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 101;
+      opacity: 0;
+    }
+    @keyframes confetti-fall {
+      0%   { transform: translateY(-40px) rotate(0deg) scale(1); opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg) scale(0.4); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- STEP 1 -->
+    <div id="step-invite" class="step" style="display:flex;">
+      <span class="mug-icon">☕</span>
+      <span class="tag">Happy Weekend!</span>
+      <h1>Hey <span>Vivi</span> ☺️</h1>
+      <p class="subtitle">Do you wanna go out with me<br>for some <strong style="color:#f7c59f">hot chocolate</strong>? 🍫</p>
+      <button class="btn-primary" id="btn-yes" onclick="handleYes()">Yes!! 🥰</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step-time" class="step">
+      <span style="font-size:2.8rem">🎉</span>
+      <h2 style="font-family:'Pacifico',cursive;color:#f7c59f;font-size:1.5rem;">Yay! What time?</h2>
+      <p style="color:#c9835a;font-size:.9rem;">Pick a time and I'll be there ☕</p>
+      <div class="time-options">
+        <button class="btn-time" onclick="handleTime('4 PM')">4 PM</button>
+        <button class="btn-time" onclick="handleTime('5 PM')">5 PM</button>
+        <button class="btn-time" onclick="handleTime('6 PM')">6 PM</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step-confirm" class="step">
+      <span style="font-size:3rem">🍫❤️</span>
+      <h2 style="font-family:'Pacifico',cursive;color:#f7c59f;font-size:1.4rem;">I'm glad you said yes 🥹</h2>
+      <p id="confirm-text" style="color:#c9835a;font-size:.92rem;"></p>
+      <p style="color:#7a3a18;font-size:.8rem;">See you then, Vivi 🌙✨</p>
+      <button class="btn-primary" style="font-size:.82rem;padding:10px 22px;margin-top:6px;" onclick="handleSecretReveal()">there's one more thing 🤫</button>
+    </div>
+
+    <!-- STEP 4 -->
+    <div id="step-secret" class="step">
+      <span style="font-size:2.4rem">🔐✨</span>
+      <span class="tag" style="background:#4a1408;letter-spacing:2.5px;">Secret Question</span>
+      <h2 style="font-family:'Pacifico',cursive;color:#f7c59f;font-size:1.25rem;line-height:1.45;">with all your permission...<br>can I proceed to 10%? 🥺</h2>
+      <p style="color:#c9835a;font-size:.84rem;max-width:270px;line-height:1.55;">no pressure at all — only if it feels right 💛</p>
+      <div class="secret-options">
+        <button class="btn-secret" onclick="handleSecret('few')">yes, in a few days 🌸</button>
+        <button class="btn-secret" onclick="handleSecret('july')">yes, from July 1st 🗓️</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div id="step-secret-confirm" class="step">
+      <span id="secret-emoji" style="font-size:3rem"></span>
+      <h2 id="secret-title" style="font-family:'Pacifico',cursive;color:#f7c59f;font-size:1.3rem;"></h2>
+      <p id="secret-text" style="color:#c9835a;font-size:.9rem;line-height:1.55;max-width:290px;"></p>
+      <p style="color:#7a3a18;font-size:.78rem;margin-top:4px;">thank you for trusting me, Vivi 🌙</p>
+    </div>
+  </div>
+
+  <div id="btn-no">No 🙅</div>
+
+  <!-- CELEBRATION OVERLAY -->
+  <div id="celebration">
+    <div id="big-heart">🧡</div>
+    <div id="celeb-title">we're at 10% 🥹</div>
+    <div id="celeb-sub" id="celeb-sub"></div>
+    <div id="ten-badge">✨ 10% unlocked ✨</div>
+    <button id="celeb-close" onclick="closeCelebration()">okay, I'm smiling now 🥰</button>
+  </div>
+
+  <div id="progress-bar-wrap">
+    <div id="progress-label">Progressed — <span id="pct">0%</span></div>
+    <div id="progress-track"><div id="progress-fill"></div></div>
+  </div>
+
+  <script>
+    /* ── Floating beans ── */
+    const emojis = ['☕','🍫','🍵','✨','❤️','🌙'];
+    for (let i = 0; i < 18; i++) {
+      const b = document.createElement('span');
+      b.className = 'bean';
+      b.textContent = emojis[i % emojis.length];
+      b.style.left = Math.random() * 100 + 'vw';
+      b.style.animationDuration = (9 + Math.random() * 12) + 's';
+      b.style.animationDelay = (Math.random() * 10) + 's';
+      b.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+      document.body.appendChild(b);
+    }
+
+    /* ── No button physics ── */
+    const btnNo = document.getElementById('btn-no');
+    let px = 200, py = 200, vx = 1.2, vy = 0.8;
+    let mouseX = -999, mouseY = -999;
+    const REPULSE = 160, PUSH = 7;
+
+    function bw() { return btnNo.offsetWidth || 90; }
+    function bh() { return btnNo.offsetHeight || 46; }
+
+    window.addEventListener('load', () => {
+      const yr = document.getElementById('btn-yes').getBoundingClientRect();
+      px = yr.right + 18; py = yr.top;
+      btnNo.style.left = px + 'px'; btnNo.style.top = py + 'px';
+    });
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    function loop() {
+      const W = window.innerWidth - bw(), H = window.innerHeight - bh();
+      const cx = px + bw()/2, cy = py + bh()/2;
+      const dx = mouseX - cx, dy = mouseY - cy;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < REPULSE && dist > 0) {
+        const force = (REPULSE - dist) / REPULSE;
+        vx -= (dx/dist) * PUSH * force;
+        vy -= (dy/dist) * PUSH * force;
+      }
+      const speed = Math.sqrt(vx*vx + vy*vy);
+      if (speed < 1.0) { vx = vx/(speed||1)*1.0; vy = vy/(speed||1)*1.0; }
+      else if (speed > 9) { vx = vx/speed*9; vy = vy/speed*9; }
+      px += vx; py += vy;
+      if (px <= 0) { px = 0; vx = Math.abs(vx); }
+      if (px >= W) { px = W; vx = -Math.abs(vx); }
+      if (py <= 0) { py = 0; vy = Math.abs(vy); }
+      if (py >= H) { py = H; vy = -Math.abs(vy); }
+      if (dist >= REPULSE) { vx *= 0.995; vy *= 0.995; }
+      btnNo.style.left = px + 'px';
+      btnNo.style.top  = py + 'px';
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    /* ── Progress — 1 to 5% only ── */
+    function animateProgress(target) {
+      target = Math.min(5, Math.max(1, target));
+      const fill = document.getElementById('progress-fill');
+      const label = document.getElementById('pct');
+      const from = parseFloat(fill.style.width) || 0;
+      fill.style.width = target + '%';
+      const duration = 1800, start = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        label.textContent = (from + (target - from) * p).toFixed(1) + '%';
+        if (p < 1) requestAnimationFrame(tick);
+        else label.textContent = target + '%';
+      })(performance.now());
+    }
+
+    /* special 10% animation for the bar — goes beyond cap just for celebration */
+    function animateTo10() {
+      const fill = document.getElementById('progress-fill');
+      const label = document.getElementById('pct');
+      const from = 5;
+      fill.style.transition = 'width 2.2s cubic-bezier(.4,0,.2,1)';
+      fill.style.width = '10%';
+      const duration = 2200, start = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        label.textContent = (from + (10 - from) * p).toFixed(1) + '%';
+        if (p < 1) requestAnimationFrame(tick);
+        else label.textContent = '10%';
+      })(performance.now());
+    }
+
+    function showStep(id) {
+      ['step-invite','step-time','step-confirm','step-secret','step-secret-confirm'].forEach(s => {
+        document.getElementById(s).style.display = 'none';
+      });
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    window.addEventListener('load', () => setTimeout(() => animateProgress(1), 600));
+
+    /* ── Steps ── */
+    function handleYes() {
+      btnNo.style.display = 'none';
+      showStep('step-time');
+      animateProgress(2);
+    }
+
+    function handleTime(t) {
+      showStep('step-confirm');
+      document.getElementById('confirm-text').textContent =
+        'Hot chocolate at ' + t + ' — see you there! ☕🍫';
+      animateProgress(3);
+    }
+
+    function handleSecretReveal() {
+      showStep('step-secret');
+    }
+
+    function handleSecret(choice) {
+      const emoji = document.getElementById('secret-emoji');
+      const title = document.getElementById('secret-title');
+      const text  = document.getElementById('secret-text');
+      const sub   = document.getElementById('celeb-sub');
+
+      if (choice === 'few') {
+        emoji.textContent = '🌸✨';
+        title.textContent = 'a few days it is 🥹';
+        text.textContent  = 'I\'ll be patient and I\'ll be ready. thank you for saying yes 💛';
+        sub.textContent   = 'in just a few days we go from 5% to 10% 🌸 I\'ll be here, counting every smile 💛';
+      } else {
+        emoji.textContent = '🗓️🧡';
+        title.textContent = 'July 1st — noted 🥺';
+        text.textContent  = 'I\'ll count down every day. good things are worth waiting for 💛';
+        sub.textContent   = 'July 1st is now circled in my heart 🗓️ see you at 10%, Vivi 💛';
+      }
+
+      showStep('step-secret-confirm');
+      animateProgress(5);
+
+      // Trigger celebration after a short pause
+      setTimeout(() => launchCelebration(), 1200);
+    }
+
+    /* ── Celebration ── */
+    function launchCelebration() {
+      spawnConfetti();
+      const overlay = document.getElementById('celebration');
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          overlay.classList.add('active');
+        });
+      });
+      // kick off the 10% bar animation slightly after overlay opens
+      setTimeout(() => animateTo10(), 600);
+    }
+
+    function closeCelebration() {
+      const overlay = document.getElementById('celebration');
+      overlay.classList.remove('active');
+      setTimeout(() => { overlay.style.display = 'none'; }, 600);
+    }
+
+    function spawnConfetti() {
+      const colors = ['#f7c59f','#e86c2c','#f7a55a','#ff9e6d','#c9835a','#fff4e0','#ffb347','#ff6b6b'];
+      const shapes = ['circle', 'rect', 'star'];
+      for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        el.style.background = color;
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = '-20px';
+        if (shape === 'circle') el.style.borderRadius = '50%';
+        else if (shape === 'star') {
+          el.style.background = 'transparent';
+          el.style.fontSize = '14px';
+          el.style.width = 'auto';
+          el.style.height = 'auto';
+          el.textContent = ['✨','🌸','💛','🧡','☕','🍫'][Math.floor(Math.random()*6)];
+        }
+        const dur = 2.2 + Math.random() * 2.4;
+        const delay = Math.random() * 1.2;
+        el.style.animation = `confetti-fall ${dur}s ${delay}s ease-in forwards`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), (dur + delay + 0.5) * 1000);
+      }
+    }
+  </script>
+</body>
+</html>
