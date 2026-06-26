@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Weekend Vivi 🍫</title>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init("zi-4_80_xxlRhTDfb");</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -365,18 +367,15 @@
 
     window.addEventListener('load', () => setTimeout(() => animateProgress(1), 600));
 
-    /* ── WhatsApp notify ── */
-    const WA = '919741902140';
+    /* ── EmailJS notify ── */
     let chosenTime = '';
     let chosenProceed = '';
 
-    function sendWhatsApp() {
-      const parts = [];
-      if (chosenTime)    parts.push('Time: ' + chosenTime);
-      if (chosenProceed) parts.push('Proceed to 10%: ' + chosenProceed);
-      if (!parts.length) return;
-      const msg = encodeURIComponent('Hey! Vivi chose —\n' + parts.join('\n') + ' ☕');
-      window.open('https://wa.me/' + WA + '?text=' + msg, '_blank');
+    function sendEmail() {
+      emailjs.send('service_zoh98jn', 'template_ays8cbr', {
+        time:    chosenTime    || 'not yet chosen',
+        proceed: chosenProceed || 'not yet chosen'
+      });
     }
 
     /* ── Steps ── */
@@ -392,7 +391,7 @@
       document.getElementById('confirm-text').textContent =
         'Hot chocolate at ' + t + ' — see you there! ☕🍫';
       animateProgress(3);
-      sendWhatsApp();
+      sendEmail();
     }
 
     function handleSecretReveal() {
@@ -421,7 +420,7 @@
 
       showStep('step-secret-confirm');
       animateProgress(5);
-      sendWhatsApp();
+      sendEmail();
 
       // Trigger celebration after a short pause
       setTimeout(() => launchCelebration(), 1200);
