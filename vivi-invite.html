@@ -365,6 +365,20 @@
 
     window.addEventListener('load', () => setTimeout(() => animateProgress(1), 600));
 
+    /* ── WhatsApp notify ── */
+    const WA = '919741902140';
+    let chosenTime = '';
+    let chosenProceed = '';
+
+    function sendWhatsApp() {
+      const parts = [];
+      if (chosenTime)    parts.push('Time: ' + chosenTime);
+      if (chosenProceed) parts.push('Proceed to 10%: ' + chosenProceed);
+      if (!parts.length) return;
+      const msg = encodeURIComponent('Hey! Vivi chose —\n' + parts.join('\n') + ' ☕');
+      window.open('https://wa.me/' + WA + '?text=' + msg, '_blank');
+    }
+
     /* ── Steps ── */
     function handleYes() {
       btnNo.style.display = 'none';
@@ -373,10 +387,12 @@
     }
 
     function handleTime(t) {
+      chosenTime = t;
       showStep('step-confirm');
       document.getElementById('confirm-text').textContent =
         'Hot chocolate at ' + t + ' — see you there! ☕🍫';
       animateProgress(3);
+      sendWhatsApp();
     }
 
     function handleSecretReveal() {
@@ -390,11 +406,13 @@
       const sub   = document.getElementById('celeb-sub');
 
       if (choice === 'few') {
+        chosenProceed = 'yes, in a few days 🌸';
         emoji.textContent = '🌸✨';
         title.textContent = 'a few days it is 🥹';
         text.textContent  = 'I\'ll be patient and I\'ll be ready. thank you for saying yes 💛';
         sub.textContent   = 'in just a few days we go from 5% to 10% 🌸 I\'ll be here, counting every smile 💛';
       } else {
+        chosenProceed = 'yes, from July 1st 🗓️';
         emoji.textContent = '🗓️🧡';
         title.textContent = 'July 1st — noted 🥺';
         text.textContent  = 'I\'ll count down every day. good things are worth waiting for 💛';
@@ -403,6 +421,7 @@
 
       showStep('step-secret-confirm');
       animateProgress(5);
+      sendWhatsApp();
 
       // Trigger celebration after a short pause
       setTimeout(() => launchCelebration(), 1200);
